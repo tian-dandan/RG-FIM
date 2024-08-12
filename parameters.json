@@ -1,0 +1,21 @@
+{
+    "comment0": "below is for object_pnts.py",
+    "boundary": "data/bnd.shp",
+    "boundary elevation": "data/bnd_elev.shp",
+    "centroid": "data/centroid.shp",
+    "centroid elevation": "data/centroid_elev.shp",
+    "flood image": "data/flood_2class.tif",
+    "dem": "data/ned19_clip.tif",
+    "threads":"10",
+    "comment1":"Below is the parameters for filter.py",
+    "Filter in": "data/centroid_elev.shp",
+    "Filter field": "LWSE",
+    "Filter out": "data/filtered.shp",
+    "sigma": "2",
+    "nn": "5",
+    "power": "2",
+    "comment2":"Below is the parameters for flood_idw.py",
+    "water level": "data/filtered.shp",
+    "field name": "elevation_",
+    "output flood": "data/flood_idw.tif"
+}
