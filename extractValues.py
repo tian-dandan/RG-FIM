@@ -25,20 +25,19 @@ def transform_coordinates(x, y, src_proj, dst_proj):
     return x_trans, y_trans
 
 def main():
+    
+    # Read the JSON file
     launch_json = "parameters.json"
-
     json_file_path = launch_json
 
-    # Read the JSON file
-    
     with open(json_file_path, 'r') as file:
         args = json.load(file)
 
-
-
+    # Read parameters
     raster_path = args["dem"]
     point_shapefile_path = args["boundary"]
     output_shapefile_path = args["boundary elevation"]
+    
     # Open the raster file
     raster_ds = gdal.Open(raster_path)
     if not raster_ds:
@@ -47,10 +46,11 @@ def main():
     band = raster_ds.GetRasterBand(1)
     if not band:
         raise RuntimeError(f"Unable to get raster band")
+    
     raster_data = band.ReadAsArray()
     raster_srs = osr.SpatialReference(wkt=raster_ds.GetProjection())
 
- # Get the raster geotransform
+    # Get the raster geotransform
     transform = raster_ds.GetGeoTransform()
     inverse_transform = gdal.InvGeoTransform(transform)
     
@@ -82,7 +82,7 @@ def main():
         output_layer.CreateField(field_defn)
     
     # Add a new field to store the raster values
-    raster_value_field = ogr.FieldDefn("RasterVal", ogr.OFTReal)
+    raster_value_field = ogr.FieldDefn("Elev", ogr.OFTReal)
     output_layer.CreateField(raster_value_field)
     
     # Initialize lists to hold coordinates
@@ -123,9 +123,9 @@ def main():
         for i in range(layer_defn.GetFieldCount()):
             output_feature.SetField(layer_defn.GetFieldDefn(i).GetNameRef(), feature.GetField(i))
         if raster_value is not None:
-            output_feature.SetField("RasterVal", float(raster_value))
+            output_feature.SetField("Elev", float(raster_value))
         else:
-            output_feature.SetField("RasterVal", None)
+            output_feature.SetField("Elev", None)
         output_layer.CreateFeature(output_feature)
         output_feature = None
     print(f"Raster values extracted to {output_shapefile_path}")

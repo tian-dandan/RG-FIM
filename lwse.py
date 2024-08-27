@@ -36,56 +36,64 @@ def main():
 
     for id in range(max(bnd_df.obid)):
         # Extract boundary pixel elevation for one object
-        field_values = bnd_df[bnd_df["obid"] == id+1]["RasterVal"]
+        field_values = bnd_df[bnd_df["obid"] == id+1]["Elev"]
+        
+        # Clean the data by removing NaN and inf values
+        clean_values = field_values[np.isfinite(field_values)]
+        
+        # zero_count = (field_values == 0).sum()
+        # if zero_count >= len(field_values) / 2:
+        #     continue
         
         '''
         Calculate the LWSE: peak+std
         '''
         
         # Calculate kernel density estimates
-        kde = gaussian_kde(field_values)
-        x_range = np.linspace(min(field_values), max(field_values), 30)
-        kde_values = kde(x_range)
+        if clean_values.size > 0:
+            kde = gaussian_kde(clean_values)
+            x_range = np.linspace(min(clean_values), max(clean_values), 30)
+            kde_values = kde(x_range)
 
-        # Get the right peak
-        # Finds the index of all local maximum values
-        local_maxima_indices = argrelextrema(kde_values, np.greater)[0]
-        
-        # Filter the index of the local maximum point with a value greater than 0.01
-        filtered_indices = [index for index in local_maxima_indices if kde_values[index] > 0.05]
-        
-        if len(filtered_indices) == 0:
-            continue 
-        
-        wse_peak = x_range[filtered_indices[-1]]
-        
-        # Get the right valley
-        # Find the index of all local minima (bottoms)
-        valley_indices = argrelextrema(kde_values, np.less)[0]
-        
-        # Find the nearest trough to the left of the peak
-        left_valleys = valley_indices[valley_indices < filtered_indices[-1]]
-        
-        if left_valleys.size == 0:
-            continue 
+            # Get the right peak
+            # Finds the index of all local maximum values
+            local_maxima_indices = argrelextrema(kde_values, np.greater)[0]
             
-        wse_valley = x_range[left_valleys[-1]]
+            # Filter the index of the local maximum point with a value greater than 0.01
+            filtered_indices = [index for index in local_maxima_indices if kde_values[index] > 0.05]
             
+            if len(filtered_indices) == 0:
+                continue 
+            
+            wse_peak = x_range[filtered_indices[-1]]
+            
+            # Get the right valley
+            # Find the index of all local minima (bottoms)
+            valley_indices = argrelextrema(kde_values, np.less)[0]
+            
+            # Find the nearest trough to the left of the peak
+            left_valleys = valley_indices[valley_indices < filtered_indices[-1]]
+            
+            if left_valleys.size == 0:
+                continue 
+                
+            wse_valley = x_range[left_valleys[-1]]
+                
 
-        # Get the 1 std upper limit
-        # Select data greater than the valley
-        selected_data = [x for x in field_values if x > wse_valley]
-        
-        # Calculate the upper limit based on mean
-        mean_value = np.mean(selected_data)
-        std_dev_value = np.std(selected_data)
-        wse_1std = mean_value + std_dev_value
-        
-        # Calculate the upper limit based on peak
-        wse_peakStd = wse_peak + std_dev_value
-        
-        # Update the centroid point attribute table
-        centroid_df.loc[centroid_df["ID"]==id+1, "LWSE"] = wse_peakStd
+            # Get the 1 std upper limit
+            # Select data greater than the valley
+            selected_data = [x for x in clean_values if x > wse_valley]
+            
+            # Calculate the upper limit based on mean
+            mean_value = np.mean(selected_data)
+            std_dev_value = np.std(selected_data)
+            wse_1std = mean_value + std_dev_value
+            
+            # Calculate the upper limit based on peak
+            wse_peakStd = wse_peak + std_dev_value
+            
+            # Update the centroid point attribute table
+            centroid_df.loc[centroid_df["ID"]==id+1, "LWSE"] = wse_peakStd
         
     # Filter out the points without valid LWSE values
     filter_centroid_df = centroid_df[centroid_df['LWSE'] != 0]
