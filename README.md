@@ -1,7 +1,7 @@
 # RG-FIM
 
 ## Required input data
-1. Remote sensing-derived binary flood map
+1. Remote sensing-derived binary flood map: 1-water, 0-non-water
 2. DEM
    
 ## Install required packages
