@@ -16,6 +16,6 @@
     "power": "2",
     "comment2":"Below is the parameters for flood_idw.py",
     "water level": "data/filtered.shp",
-    "field name": "elevation_",
+    "field name": "interp_ele",
     "output flood": "data/flood_idw.tif"
 }
