@@ -21,7 +21,7 @@ Change the file names if needed.
     "centroid": "data/centroid.shp",
     "centroid elevation": "data/centroid_elev.shp",
     "flood image": "data/flood_2class.tif",
-    "dem": "data/ned19_clip.tif",
+    "dem": "data/dem.tif",
     "threads":"10",
     "comment1":"Below is the parameters for filter.py",
     "Filter in": "data/centroid_elev.shp",
@@ -32,7 +32,7 @@ Change the file names if needed.
     "power": "2",
     "comment2":"Below is the parameters for flood_idw.py",
     "water level": "data/filtered.shp",
-    "field name": "elevation_",
+    "field name": "interp_ele",
     "output flood": "data/flood_idw.tif"
 }
 `````
