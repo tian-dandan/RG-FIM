@@ -1,5 +1,9 @@
 # RG-FIM
 
+## Required input data
+1. Remote sensing-derived binary flood map
+2. DEM
+   
 ## Install required packages
 ```python
 pip install pybind11
