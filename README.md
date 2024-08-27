@@ -56,9 +56,9 @@ python lwse.py
 ```
 Step 4: Remove outliers
 ```python
-python filter.py
+python filter_pnts.py
 ```
 Step 5: Interpolate to get water/non-water
 ```python
-python flood_idw.py
+python idw2flood.py
 ```
