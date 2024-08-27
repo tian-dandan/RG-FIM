@@ -5,6 +5,7 @@ import pandas as pd
 import json
 import geopandas as gpd
 from shapely.geometry import Point
+
 def pixel_to_geocoords (geotransform, col, row):
     """
     Transform pixel/line (col/row) coordinates to georeferenced coordinates (x/y).
@@ -20,8 +21,8 @@ def pixel_to_geocoords (geotransform, col, row):
     rotationY = geotransform[4]
     pixelHeight = geotransform[5]
 
-    x = originX + col * pixelWidth + row * rotationX
-    y = originY + col * rotationY + row * pixelHeight
+    x = originX + col * pixelWidth + row * rotationX # + 0.5 * pixelWidth
+    y = originY + col * rotationY + row * pixelHeight # + 0.5 * pixelHeight
 
     return x, y
 
